@@ -1,6 +1,6 @@
 @extends('client.layout')
 
-<h1>rinku singh</h1>
+
 
 @php
     $content = $page->content ?? [];
