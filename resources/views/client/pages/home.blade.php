@@ -1,6 +1,6 @@
 @extends('client.layout')
 
-{{-- rinku singh --}}
+<h1>rinku singh</h1>
 
 @php
     $content = $page->content ?? [];
