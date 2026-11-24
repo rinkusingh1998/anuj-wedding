@@ -1,5 +1,7 @@
 @extends('client.layout')
 
+{{-- rinku singh --}}
+
 @php
     $content = $page->content ?? [];
     $slides = collect($content['hero_slides'] ?? [])
