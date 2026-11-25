@@ -8,7 +8,7 @@
 --}}
 
 @push('head_links')
-    <link rel="stylesheet" href="{{ asset('assets/css/locations.css') }}?v=20261121">
+    <link rel="stylesheet" href="{{ asset('assets/css/locations.css') }}?v=20261125">
 @endpush
 
 @section('content')
@@ -85,13 +85,6 @@
         :tag="site_label('our_services', [], $city)"
         :title="site_label('city_services_title', ['city' => $city->name], $city)"
         :text="site_label('services_text', ['city' => $city->name], $city)"
-    />
-
-    <x-location.gallery
-        :images="$city->galleryImages(10)"
-        tag="Local Gallery"
-        :title="'Recent Decoration Work in '.$city->name"
-        :alt="$city->name.' wedding and event decoration by '.$profile->name()"
     />
 
     <x-location.faqs

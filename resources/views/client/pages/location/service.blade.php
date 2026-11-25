@@ -8,7 +8,7 @@
 --}}
 
 @push('head_links')
-    <link rel="stylesheet" href="{{ asset('assets/css/locations.css') }}?v=20261121">
+    <link rel="stylesheet" href="{{ asset('assets/css/locations.css') }}?v=20261125">
 @endpush
 
 @section('content')

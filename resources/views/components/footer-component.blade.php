@@ -261,61 +261,6 @@
         <!-- Footer Main Row End -->
 
 
-        {{-- =========================================================
-             SERVICE AREAS (only published service-area states/cities)
-        ========================================================= --}}
-        @isset($visibleStates)
-            @if (! empty($visibleStates))
-
-                <div class="footer-areas">
-
-                    <h3 class="footer-title">
-                        {{ site_label('service_areas') }}
-                    </h3>
-
-                    <div class="footer-title-line"></div>
-
-                    <div class="footer-areas-list">
-
-                        @foreach ($visibleStates as $state)
-
-                            <div class="footer-area-group">
-
-                                <a href="{{ $state['url'] }}"
-                                   class="footer-area-state">
-                                    {{ $state['name'] }}
-                                </a>
-
-                                <div class="footer-area-cities">
-
-                                    @foreach (array_slice($state['cities'], 0, 18) as $city)
-
-                                        <a href="{{ $city['url'] }}"
-                                           class="footer-area-link">
-                                            {{ $city['name'] }}
-                                        </a>
-
-                                    @endforeach
-
-                                </div>
-
-                            </div>
-
-                        @endforeach
-
-                        <a href="{{ route('locations.index') }}"
-                           class="footer-area-link footer-area-more">
-                            {{ site_label('view_all_areas') }}
-                        </a>
-
-                    </div>
-
-                </div>
-
-            @endif
-        @endisset
-
-
         <!-- Footer Bottom Start -->
         <div class="footer-bottom">
 

@@ -10,8 +10,8 @@
     --pr-soft: #fbf8f4;
     --pr-soft-2: #f6f1eb;
     --pr-ink: #241f1c;
-    --pr-text: #4a423d;
-    --pr-muted: #7a6f67;
+    --pr-text: #3c342f;
+    --pr-muted: #655b54;
     --pr-line: #ece4db;
     --pr-line-soft: #f4ede6;
     --pr-accent: #9b4a2f;
@@ -31,10 +31,10 @@
     --theme-border-light: #f2eae2;
     --theme-border-dashed: #ece4db;
     --theme-text-dark: #241f1c;
-    --theme-text: #4a423d;
-    --theme-text-muted: #7a6f67;
+    --theme-text: #3c342f;
+    --theme-text-muted: #655b54;
 
-    --font-heading: "Cormorant Garamond", "Marcellus", "Playfair Display", Georgia, serif;
+    --font-heading: "Playfair Display", "Cormorant Garamond", Georgia, serif;
     --font-body: "Manrope", "DM Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
 }
 
@@ -3232,7 +3232,7 @@ h3,
 h4,
 h5,
 h6 {
-    font-weight: 500;
+    font-weight: 700;
     letter-spacing: 0.002em;
 }
 
@@ -3594,12 +3594,12 @@ h6,
 .packages-hero-section h1,
 .faq-hero-section h1 {
     font-family: var(--font-heading);
-    font-weight: 600;
+    font-weight: 700;
     letter-spacing: 0.004em;
 }
 
 h1 {
-    font-weight: 600;
+    font-weight: 700;
     letter-spacing: 0.002em;
 }
 
@@ -3698,4 +3698,55 @@ h2 {
     h2 {
         font-size: clamp(1.45rem, 1.2rem + 1.2vw, 1.9rem);
     }
+}
+
+/* =========================================================
+   GLOBAL TYPOGRAPHY REFINEMENT (2026-11-25)
+   One premium display face for every heading, a stronger
+   heading weight hierarchy and higher-contrast body copy.
+   Applies to every template, including city and state pages.
+   ========================================================= */
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    font-family: var(--font-heading) !important;
+    font-weight: 700 !important;
+    letter-spacing: -0.002em;
+}
+
+body {
+    color: var(--pr-text);
+}
+
+/* ---------- FAQ headings and accordions ---------- */
+
+.faq-title h2,
+.faq-section-heading > h2,
+.faq-intro-content > h2 {
+    font-family: var(--font-heading) !important;
+    font-weight: 700 !important;
+}
+
+.faq-accordion .accordion-button,
+.faq-item .accordion-button,
+.faq-section .accordion-button,
+.service-faq-item .accordion-button {
+    font-family: var(--font-heading) !important;
+    font-size: clamp(1.02rem, 0.98rem + 0.22vw, 1.16rem);
+    font-weight: 700;
+    line-height: 1.45;
+}
+
+.faq-accordion .accordion-body,
+.faq-item .accordion-body,
+.faq-section .accordion-body,
+.service-faq-item .accordion-body {
+    font-family: var(--font-body);
+    font-size: clamp(0.97rem, 0.95rem + 0.1vw, 1.03rem);
+    line-height: 1.85;
+    color: var(--theme-text);
 }
