@@ -230,8 +230,6 @@
         </div>
     </section>
 
-    <x-service-areas />
-
     <section class="blog-final-section" aria-labelledby="blogFinalTitle">
         <div class="container">
             <div class="blog-final-card">
