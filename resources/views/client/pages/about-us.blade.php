@@ -462,66 +462,6 @@
             </div>
         </div>
     </section>
-    <section class="about-area-section"
-             aria-labelledby="aboutAreaTitle">
-        <div class="container">
-            <div class="row align-items-center g-5">
-                <div class="col-lg-6">
-                    @if (filled(site_label('service_areas')))
-                        <span class="about-section-eyebrow">{{ site_label('service_areas') }}</span>
-                        <h2 id="aboutAreaTitle">{{ site_label('service_areas') }}</h2>
-                    @endif
-                    @if (filled(site_setting('service_areas_intro')))
-                        <p>{{ site_setting('service_areas_intro') }}</p>
-                    @endif
-                    @if (filled($profile->address()))
-                        <div class="about-location">
-                            <i class="fa-solid fa-location-dot" aria-hidden="true"></i>
-                            <span>{{ $profile->address() }}</span>
-                        </div>
-                    @endif
-                    <a href="{{ url('/contact-us') }}"
-                       class="about-primary-btn about-area-btn">
-                        {{ site_label('discuss_your_event') }}
-                        <i class="fa-solid fa-arrow-right"></i>
-                    </a>
-                </div>
-                <div class="col-lg-6">
-                    <div class="about-area-panel">
-                        <div class="about-area-panel-head">
-                            <div class="about-area-panel-icon">
-                                <i class="fa-solid fa-location-dot"></i>
-                            </div>
-                            <div>
-                                <span>
-                                    {{ site_label('service_areas') }}
-                                </span>
-                                <strong>
-                                    {{ site_label('nearby_cities') }}
-                                </strong>
-                            </div>
-                        </div>
-                        <div class="about-area-list">
-                            @foreach (collect($visibleStates ?? []) as $areaState)
-                                @foreach ($areaState['cities'] as $areaCity)
-                                    <a href="{{ $areaCity['url'] }}">
-                                        <i class="fa-solid fa-check"></i>
-                                        {{ $areaCity['name'] }}
-                                    </a>
-                                @endforeach
-                            @endforeach
-                        </div>
-                        @if (filled(site_setting('service_areas_note')))
-                            <div class="about-area-note">
-                                <i class="fa-solid fa-circle-info"></i>
-                                <span>{{ site_setting('service_areas_note') }}</span>
-                            </div>
-                        @endif
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
     <section class="about-final-cta-section"
              aria-labelledby="aboutFinalCtaTitle">
         <div class="container">

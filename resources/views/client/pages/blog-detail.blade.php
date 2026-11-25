@@ -3,9 +3,6 @@
 @php
     $articleBody = (string) $post->body;
     $articleBody = preg_replace('/<h1\b([^>]*)>(.*?)<\/h1>/is', '<h2$1>$2</h2>', $articleBody) ?? $articleBody;
-    $popularAreas = collect($visibleStates ?? [])
-        ->flatMap(fn (array $state): array => $state['cities'] ?? [])
-        ->take(12);
     $whatsappUrl = $profile->whatsappUrl('Hello! I read "'.$post->title.'" and would like to discuss decoration for my event.');
     $shareUrl = rawurlencode($post->url());
     $shareText = rawurlencode($post->title);
@@ -145,21 +142,6 @@
                                     <span>{{ $related->title }}</span>
                                 </a>
                             @endforeach
-                        </div>
-                    @endif
-
-                    @if ($popularAreas->isNotEmpty())
-                        <div class="blog-detail-sidebar-card">
-                            <h2>Popular Service Areas</h2>
-                            <div class="blog-detail-area-list">
-                                @foreach ($popularAreas as $area)
-                                    <a href="{{ $area['url'] }}">{{ $area['name'] }}</a>
-                                @endforeach
-                            </div>
-                            <a href="{{ url('/locations') }}" class="blog-detail-area-all">
-                                View all locations
-                                <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
-                            </a>
                         </div>
                     @endif
 

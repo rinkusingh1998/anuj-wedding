@@ -3750,3 +3750,23 @@ body {
     line-height: 1.85;
     color: var(--theme-text);
 }
+
+/* =========================================================
+   BODY COPY TYPOGRAPHY (2026-11-25)
+   Compact, strong body copy everywhere on the website.
+   Headings, navigation, buttons and the dark footer keep
+   their own styles so hierarchy and contrast stay intact.
+   ========================================================= */
+
+:root p,
+:root li {
+    font-size: 12px !important;
+    font-weight: 600 !important;
+    color: var(--theme-text-dark) !important;
+}
+
+/* The footer sits on a dark surface, so its copy must stay light. */
+.site-footer p,
+.site-footer li {
+    color: var(--theme-white-text-muted) !important;
+}
