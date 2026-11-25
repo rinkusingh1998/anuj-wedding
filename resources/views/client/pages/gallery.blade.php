@@ -133,8 +133,6 @@
         </div>
     </section>
 
-    <x-service-areas />
-
     <section class="gallery-final-section" aria-labelledby="galleryFinalTitle">
         <div class="container">
             <div class="gallery-final-box">

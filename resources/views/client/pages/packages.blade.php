@@ -224,25 +224,6 @@
             </div>
         </div>
     </section>
-    <section class="packages-location-section">
-        <div class="container">
-            <div class="packages-location-content">
-                @if (filled(site_label('service_areas')))
-                    <h2>{{ site_label('service_areas') }}</h2>
-                @endif
-                @if (filled(site_setting('service_areas_intro')))
-                    <p>{{ site_setting('service_areas_intro') }}</p>
-                @endif
-                <div class="packages-location-list">
-                    @foreach (collect($visibleStates ?? []) as $areaState)
-                        @foreach ($areaState['cities'] as $areaCity)
-                            <a href="{{ $areaCity['url'] }}">{{ $areaCity['name'] }}</a>
-                        @endforeach
-                    @endforeach
-                </div>
-            </div>
-        </div>
-    </section>
     <section class="packages-final-section">
         <div class="container">
             <div class="packages-final-content">
