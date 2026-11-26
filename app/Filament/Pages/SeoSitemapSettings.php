@@ -3,10 +3,12 @@
 namespace App\Filament\Pages;
 
 use App\Models\City;
+use App\Models\Locality;
 use App\Models\Page as PageModel;
 use App\Models\SeoSetting;
 use App\Models\Service;
 use App\Models\State;
+use App\Providers\AppServiceProvider;
 use App\Services\SitemapService;
 use BackedEnum;
 use Filament\Actions\Action;
@@ -271,7 +273,7 @@ class SeoSitemapSettings extends Page
                     SeoSetting::flush();
                     Cache::forget('site-business-profile');
                     Cache::forget('sitemap-xml');
-                    Cache::forget('visible-states-with-cities');
+                    Cache::forget(AppServiceProvider::LOCATIONS_CACHE_KEY);
 
                     Notification::make()
                         ->success()
@@ -296,21 +298,38 @@ class SeoSitemapSettings extends Page
         $visibleStates = $stats['states'];
         $visibleServices = $stats['services'];
 
+        $totalStates = State::query()->count();
+        $totalCities = City::query()->count();
+        $totalLocalities = Locality::query()->count();
+
+        $visibleStatePages = State::query()->where('is_visible', true)->count();
+        $visibleCityPages = City::query()->where('is_visible', true)->count();
+        $visibleLocalities = Locality::query()->where('is_visible', true)->count();
+
         $hiddenCities = City::query()->where('is_visible', false)->count();
         $hiddenStates = State::query()->where('is_visible', false)->count();
+        $hiddenLocalities = Locality::query()->where('is_visible', false)->count();
         $hiddenServices = Service::query()->where('is_visible', false)->count();
         $hiddenPages = PageModel::query()->where('is_visible', false)->count();
 
         return Section::make('Overview')
-            ->description('These numbers count only the pages that are visible (indexable) on the website.')
+            ->description('Visible numbers are the pages currently published on the website. Total numbers include every record saved in the admin panel.')
             ->schema([
-                Text::make('States: '.$visibleStates)
+                Text::make('States: '.$visibleStatePages.' visible / '.$totalStates.' total')
                     ->badge()
                     ->color('success'),
 
-                Text::make('Cities / villages: '.$visibleCities)
+                Text::make('Cities / villages: '.$visibleCityPages.' visible / '.$totalCities.' total')
                     ->badge()
                     ->color('success'),
+
+                Text::make('Villages / areas: '.$visibleLocalities.' visible / '.$totalLocalities.' total')
+                    ->badge()
+                    ->color('success'),
+
+                Text::make('Indexable service areas: '.$visibleCities.' cities in '.$visibleStates.' states')
+                    ->badge()
+                    ->color('info'),
 
                 Text::make('Services: '.$visibleServices)
                     ->badge()
@@ -331,6 +350,10 @@ class SeoSitemapSettings extends Page
                 Text::make('Hidden cities: '.$hiddenCities)
                     ->badge()
                     ->color($hiddenCities ? 'danger' : 'gray'),
+
+                Text::make('Hidden villages / areas: '.$hiddenLocalities)
+                    ->badge()
+                    ->color($hiddenLocalities ? 'danger' : 'gray'),
 
                 Text::make('Hidden services: '.$hiddenServices)
                     ->badge()

@@ -58,6 +58,14 @@ class CitiesTable
                         default => 'gray',
                     }),
 
+                TextColumn::make('localities_count')
+                    ->label('Villages / areas')
+                    ->counts('localities')
+                    ->badge()
+                    ->color('warning')
+                    ->sortable()
+                    ->toggleable(),
+
                 ToggleColumn::make('is_visible')
                     ->label('Show on website')
                     ->onColor('success')

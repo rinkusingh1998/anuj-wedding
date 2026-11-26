@@ -4,6 +4,7 @@ namespace App\Filament\Pages;
 
 use App\Filament\Forms\Components\MediaUpload;
 use App\Models\SeoSetting;
+use App\Providers\AppServiceProvider;
 use BackedEnum;
 use Filament\Actions\Action;
 use Filament\Forms\Components\Select;
@@ -170,7 +171,7 @@ class GlobalSettings extends Page
         Cache::forget('navigation-header');
         Cache::forget('navigation-footer');
         Cache::forget('navigation-mobile');
-        Cache::forget('visible-states-with-cities');
+        Cache::forget(AppServiceProvider::LOCATIONS_CACHE_KEY);
 
         Notification::make()
             ->success()

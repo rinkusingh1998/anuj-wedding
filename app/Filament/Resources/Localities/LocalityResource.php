@@ -20,15 +20,31 @@ class LocalityResource extends Resource
 {
     protected static ?string $model = Locality::class;
 
-    protected static ?string $navigationLabel = 'Localities & Areas';
+    protected static ?string $navigationLabel = 'Villages, Localities & Areas';
 
     protected static ?string $modelLabel = 'Locality';
+
+    protected static ?string $pluralModelLabel = 'Villages, Localities & Areas';
 
     protected static ?string $recordTitleAttribute = 'name';
 
     protected static string|\UnitEnum|null $navigationGroup = 'Locations';
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedMapPin;
+
+    protected static ?int $navigationSort = 3;
+
+    public static function getNavigationBadge(): ?string
+    {
+        return (string) Locality::query()->count();
+    }
+
+    public static function getNavigationBadgeTooltip(): ?string
+    {
+        $visible = Locality::query()->where('is_visible', true)->count();
+
+        return $visible.' visible on website';
+    }
 
     public static function form(Schema $schema): Schema
     {

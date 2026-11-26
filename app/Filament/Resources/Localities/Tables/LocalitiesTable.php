@@ -4,6 +4,7 @@ namespace App\Filament\Resources\Localities\Tables;
 
 use App\Models\Locality;
 use Filament\Actions\Action;
+use Filament\Actions\BulkAction;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
@@ -16,6 +17,7 @@ use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Filters\TernaryFilter;
 use Filament\Tables\Filters\TrashedFilter;
 use Filament\Tables\Table;
+use Illuminate\Support\Collection;
 
 class LocalitiesTable
 {
@@ -106,6 +108,22 @@ class LocalitiesTable
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
+                    BulkAction::make('show')
+                        ->label('Show pages')
+                        ->icon('heroicon-o-eye')
+                        ->color('success')
+                        ->requiresConfirmation()
+                        ->deselectRecordsAfterCompletion()
+                        ->action(fn (Collection $records) => $records->each->update(['is_visible' => true])),
+
+                    BulkAction::make('hide')
+                        ->label('Hide pages')
+                        ->icon('heroicon-o-eye-slash')
+                        ->color('danger')
+                        ->requiresConfirmation()
+                        ->deselectRecordsAfterCompletion()
+                        ->action(fn (Collection $records) => $records->each->update(['is_visible' => false])),
+
                     DeleteBulkAction::make(),
                     ForceDeleteBulkAction::make(),
                     RestoreBulkAction::make(),

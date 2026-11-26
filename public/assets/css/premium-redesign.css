@@ -3754,8 +3754,8 @@ body {
 /* =========================================================
    BODY COPY TYPOGRAPHY (2026-11-25)
    Compact, strong body copy everywhere on the website.
-   Headings, navigation, buttons and the dark footer keep
-   their own styles so hierarchy and contrast stay intact.
+   Headings, navigation and buttons keep their own styles so
+   hierarchy stays intact.
    ========================================================= */
 
 :root p,
@@ -3765,8 +3765,124 @@ body {
     color: var(--theme-text-dark) !important;
 }
 
-/* The footer sits on a dark surface, so its copy must stay light. */
+/* =========================================================
+   LIGHT FOOTER + DARK COPY (2026-11-26)
+   The footer now follows the same cream + dark-text system as
+   the rest of the website. Paragraphs, list items, spans and
+   links all use the compact body-copy typography, so the footer
+   stays readable while matching the main content.
+   ========================================================= */
+
+.site-footer {
+    background: var(--pr-soft);
+    color: var(--pr-text);
+}
+
+.site-footer::before {
+    background:
+        linear-gradient(
+            135deg,
+            #fbf8f4 0%,
+            rgba(251, 248, 244, .97) 48%,
+            rgba(246, 241, 235, .94) 100%
+        );
+}
+
+.footer-bg {
+    opacity: .05;
+}
+
+/* The old footer inverted the logo to white for a dark surface. */
+.footer-brand-mark > a > img {
+    filter: none;
+}
+
+.footer-title {
+    color: var(--pr-ink);
+}
+
+.footer-description,
+.footer-links a,
+.footer-contact li,
+.footer-contact a,
+.copyright,
+.footer-legal a,
+.footer-social a {
+    color: var(--pr-muted);
+}
+
+.footer-social a,
+.footer-contact-icon {
+    border-color: var(--pr-line);
+}
+
+.footer-contact-icon {
+    color: var(--pr-accent);
+}
+
+.footer-bottom {
+    border-top-color: var(--pr-line);
+}
+
+.footer-links a:hover,
+.footer-contact a:hover,
+.footer-legal a:hover {
+    color: var(--pr-accent);
+}
+
+.footer-links a:hover i {
+    color: var(--pr-accent);
+}
+
+/* Compact, strong copy in the footer, including spans and links. */
 .site-footer p,
-.site-footer li {
-    color: var(--theme-white-text-muted) !important;
+.site-footer li,
+.site-footer span,
+.site-footer a {
+    font-size: 12px !important;
+    font-weight: 600 !important;
+    color: var(--theme-text-dark) !important;
+}
+
+/* Keep hover states readable on the light footer. */
+.site-footer .footer-links a:hover,
+.site-footer .footer-contact a:hover,
+.site-footer .footer-legal a:hover {
+    color: var(--pr-accent) !important;
+}
+
+.site-footer .footer-social a:hover,
+.site-footer .footer-contact li:hover .footer-contact-icon {
+    color: var(--theme-white) !important;
+}
+
+/* =========================================================
+   LOCATIONS DIRECTORY: VILLAGES / AREAS (2026-11-26)
+   Localities and villages are shown under the district they
+   belong to, with the same searchable card layout as cities.
+   ========================================================= */
+
+.locations-localities-block {
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px dashed var(--pr-line-soft);
+}
+
+.locations-localities-block h4 {
+    margin: 0 0 9px;
+    color: var(--pr-muted);
+    font-family: var(--font-body);
+    font-size: 0.72rem;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+}
+
+.locations-city-card--area {
+    background: var(--pr-soft);
+}
+
+.locations-city-card--area .locations-city-icon {
+    background: #fff;
+    color: var(--pr-gold);
 }

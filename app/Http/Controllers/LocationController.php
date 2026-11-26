@@ -63,9 +63,18 @@ class LocationController extends Controller
 
         $states = State::query()
             ->published()
-            ->with(['cities' => fn ($query) => $query->published()->ordered()])
+            ->with([
+                'cities' => fn ($query) => $query->published()->ordered(),
+                'localities' => fn ($query) => $query->published()->ordered()->with('city'),
+            ])
             ->ordered()
             ->get();
+
+        // The directory lists cities and localities together, so each
+        // locality needs its parent state for the public URL.
+        $states->each(function (State $state): void {
+            $state->localities->each(fn (Locality $locality) => $locality->setRelation('state', $state));
+        });
 
         $breadcrumbs = [
             ['name' => 'Home', 'url' => url('/')],
@@ -96,11 +105,23 @@ class LocationController extends Controller
     private function statePage(State $state): View
     {
         $cities = $state->cities()->published()->ordered()->get();
+
+        $localities = Locality::query()
+            ->publiclyVisible()
+            ->where('state_id', $state->getKey())
+            ->whereIn('city_id', $cities->pluck('id'))
+            ->with('city')
+            ->ordered()
+            ->get();
+
+        $localities->each(fn (Locality $locality) => $locality->setRelation('state', $state));
+
         $services = Service::query()->visible()->ordered()->get();
 
         return view('client.pages.location.state', [
             'state' => $state,
             'cities' => $cities,
+            'localities' => $localities,
             'services' => $services,
             'seo' => $this->content->state($state, $cities),
         ]);

@@ -41,12 +41,14 @@ class CityResource extends Resource
 
     public static function getNavigationBadge(): ?string
     {
-        return (string) City::query()->visible()->count();
+        return (string) City::query()->count();
     }
 
     public static function getNavigationBadgeTooltip(): ?string
     {
-        return 'Visible city / village pages on website';
+        $visible = City::query()->visible()->count();
+
+        return $visible.' visible on website';
     }
 
     /**

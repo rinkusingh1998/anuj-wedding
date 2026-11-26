@@ -31,6 +31,7 @@
         :meta="[
             'State' => $state->name,
             'Cities' => $cities->count().' cities covered',
+            'Villages & areas' => ($localities ?? collect())->count().' areas covered',
             'Services' => $services->count().' decoration services',
         ]"
         :phone="$profile->phone()"
@@ -73,6 +74,50 @@
                                 @foreach ($districtCities as $districtCity)
                                     <a href="{{ $districtCity->url() }}" class="loc-area-link">
                                         {{ $districtCity->name }}
+                                    </a>
+                                @endforeach
+                            </div>
+
+                        </div>
+                    @endforeach
+
+                </div>
+
+            </div>
+
+        </section>
+    @endif
+
+    @if (isset($localities) && $localities->isNotEmpty())
+        <section class="loc-section" aria-labelledby="locVillagesTitle">
+
+            <div class="container">
+
+                <div class="loc-section-head">
+
+                    <span class="loc-section-tag">Villages &amp; Areas</span>
+
+                    <h2 id="locVillagesTitle">Villages &amp; Areas in {{ $state->name }}</h2>
+
+                    <p>Explore the villages, neighbourhoods and local areas we serve across {{ $state->name }}.</p>
+
+                </div>
+
+                <div class="loc-districts">
+
+                    @foreach ($localities->groupBy(fn ($locality): string => $locality->city?->name ?? 'Areas') as $cityName => $cityLocalities)
+                        <div class="loc-district">
+
+                            <h3>
+                                <i class="fa-solid fa-map-location-dot" aria-hidden="true"></i>
+                                {{ $cityName }}
+                            </h3>
+
+                            <div class="loc-areas">
+                                @foreach ($cityLocalities as $locality)
+                                    <a href="{{ $locality->url() }}" class="loc-area-link">
+                                        <i class="fa-solid fa-house" aria-hidden="true"></i>
+                                        {{ $locality->name }}
                                     </a>
                                 @endforeach
                             </div>
