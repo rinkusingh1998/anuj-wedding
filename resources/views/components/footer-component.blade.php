@@ -104,6 +104,7 @@
                             @if (filled($whatsapp))
                                 <a
                                     href="{{ $whatsapp }}"
+                                    onclick="gtag('event', 'whatsapp_click', { event_category: 'engagement', event_label: 'WhatsApp Button' });"
                                     aria-label="WhatsApp"
                                     target="_blank"
                                     rel="noopener noreferrer"

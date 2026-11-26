@@ -90,13 +90,15 @@
                         <a href="{{ $profile->whatsappUrl() }}"
                            class="contact-whatsapp-link whatsapp-desktop d-lg-block d-md-block d-none"
                            target="_blank"
-                           rel="noopener noreferrer">
+                           rel="noopener noreferrer"
+                           onclick="gtag('event', 'whatsapp_click', { event_category: 'engagement', event_label: 'WhatsApp Button' });">
                             Chat On WhatsApp
                         </a>
                         <a href="{{ $profile->whatsappUrl() }}"
                            class="contact-whatsapp-link whatsapp-mobile d-lg-none d-md-none d-block"
                            target="_blank"
-                           rel="noopener noreferrer">
+                           rel="noopener noreferrer"
+                           onclick="gtag('event', 'whatsapp_click', { event_category: 'engagement', event_label: 'WhatsApp Button' });">
                             Chat On WhatsApp
                         </a>
                         <p>

@@ -424,6 +424,7 @@
                         class="mobile-contact-action mobile-whatsapp-action"
                         target="_blank"
                         rel="noopener noreferrer"
+                        onclick="gtag('event', 'whatsapp_click', { event_category: 'engagement', event_label: 'WhatsApp Button' });"
                     >
 
                         <span class="mobile-contact-action-icon">

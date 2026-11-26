@@ -90,7 +90,7 @@
                     </a>
 
                     @if (filled($serviceWhatsApp))
-                        <a href="{{ $serviceWhatsApp }}" class="loc-btn loc-btn-whatsapp" target="_blank" rel="noopener">
+                        <a href="{{ $serviceWhatsApp }}" class="loc-btn loc-btn-whatsapp" target="_blank" rel="noopener" onclick="gtag('event', 'whatsapp_click', { event_category: 'engagement', event_label: 'WhatsApp Button' });">
                             <i class="fa-brands fa-whatsapp" aria-hidden="true"></i>
                             WhatsApp Enquiry
                         </a>
@@ -136,7 +136,7 @@
                         </ul>
 
                         @if (filled($serviceWhatsApp))
-                            <a href="{{ $serviceWhatsApp }}" target="_blank" rel="noopener" class="svc-media-whatsapp">
+                            <a href="{{ $serviceWhatsApp }}" target="_blank" rel="noopener" class="svc-media-whatsapp" onclick="gtag('event', 'whatsapp_click', { event_category: 'engagement', event_label: 'WhatsApp Button' });">
                                 <i class="fa-brands fa-whatsapp" aria-hidden="true"></i>
                                 Ask for availability
                             </a>
@@ -174,7 +174,7 @@
                         </a>
 
                         @if (filled($serviceWhatsApp))
-                            <a href="{{ $serviceWhatsApp }}" class="svc-btn svc-btn-ghost" target="_blank" rel="noopener">
+                            <a href="{{ $serviceWhatsApp }}" class="svc-btn svc-btn-ghost" target="_blank" rel="noopener" onclick="gtag('event', 'whatsapp_click', { event_category: 'engagement', event_label: 'WhatsApp Button' });">
                                 <i class="fa-brands fa-whatsapp" aria-hidden="true"></i>
                                 Chat With Our Team
                             </a>
@@ -362,7 +362,7 @@
                     </a>
 
                     @if (filled($serviceWhatsApp))
-                        <a href="{{ $serviceWhatsApp }}" class="loc-btn loc-btn-whatsapp" target="_blank" rel="noopener">
+                        <a href="{{ $serviceWhatsApp }}" class="loc-btn loc-btn-whatsapp" target="_blank" rel="noopener" onclick="gtag('event', 'whatsapp_click', { event_category: 'engagement', event_label: 'WhatsApp Button' });">
                             <i class="fa-brands fa-whatsapp" aria-hidden="true"></i>
                             WhatsApp Now
                         </a>
