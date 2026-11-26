@@ -17,6 +17,14 @@ use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
 {
+    /**
+     * Shared cache key for the public state / city directory.
+     *
+     * The homepage service-area block, footer, locations page and SEO stats all
+     * read this list, so every place that clears the cache must use this key.
+     */
+    public const LOCATIONS_CACHE_KEY = 'visible-states-with-all-cities-v2';
+
     public function register(): void
     {
         //
@@ -163,7 +171,7 @@ class AppServiceProvider extends ServiceProvider
      */
     protected static function visibleStatesWithCities(): array
     {
-        return Cache::remember('visible-states-with-all-cities-v2', now()->addHour(), function (): array {
+        return Cache::remember(self::LOCATIONS_CACHE_KEY, now()->addHour(), function (): array {
             return State::query()
                 ->published()
                 ->ordered()

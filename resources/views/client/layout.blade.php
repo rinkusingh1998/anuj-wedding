@@ -28,7 +28,7 @@
     $replaceTemplate = isset($page) && (bool) $page->contentValue('replace_template', false);
 @endphp
 <body style="--page-image:url('{{ $pageHeroImage }}');">
-
+    <h1>Lokesh</h1>
     <x-header-component />
     <x-sidebar-component />
 

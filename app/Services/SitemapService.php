@@ -10,6 +10,7 @@ use App\Models\Post;
 use App\Models\PostCategory;
 use App\Models\Service;
 use App\Models\State;
+use App\Providers\AppServiceProvider;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\File;
 
@@ -75,7 +76,7 @@ final class SitemapService
     public static function scheduleWrite(): void
     {
         Cache::forget(self::CACHE_KEY);
-        Cache::forget('visible-states-with-cities');
+        Cache::forget(AppServiceProvider::LOCATIONS_CACHE_KEY);
 
         defer(static fn () => app(self::class)->write(), 'sitemap-write');
     }

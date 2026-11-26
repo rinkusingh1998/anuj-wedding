@@ -177,7 +177,7 @@ document.addEventListener('DOMContentLoaded', function () {
     setupFilter({
         input: '[data-location-filter]',
         item: '.locations-city-card',
-        groups: ['.locations-district-block', '.locations-state-block'],
+        groups: ['.locations-localities-block', '.locations-district-block', '.locations-state-block'],
         count: '[data-location-count]',
         empty: '[data-location-empty]',
         nameAttribute: 'data-location-name'

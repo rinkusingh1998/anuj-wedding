@@ -54,7 +54,7 @@
                 <ul class="list-disc space-y-2 pl-5">
                     <li><strong>Content</strong> - Pages, Packages, FAQs, Testimonials and the Media Library.</li>
                     <li><strong>Services</strong> - Service Categories (grouping) and Services.</li>
-                    <li><strong>Locations</strong> - States, Cities &amp; Villages, Localities &amp; Areas.</li>
+                    <li><strong>Locations</strong> - States, Cities &amp; Villages, and Villages, Localities &amp; Areas.</li>
                     <li><strong>Blog</strong> - Blog Categories and Blog Posts.</li>
                     <li><strong>Leads</strong> - Enquiries submitted from the website.</li>
                     <li><strong>SEO</strong> - SEO &amp; Sitemap settings and Redirects.</li>
@@ -63,7 +63,8 @@
                 </ul>
 
                 <p>
-                    The Dashboard shows four cards (new enquiries, pages, services, media files). Click any card
+                    The Dashboard shows cards for new enquiries, states, cities &amp; villages,
+                    villages / localities / areas, pages, services and media files. Click any card
                     to jump straight to that screen.
                 </p>
             </div>
@@ -101,9 +102,16 @@
 
             <div class="space-y-3 text-sm text-gray-600 dark:text-gray-300">
                 <p>
-                    Go to <strong>States</strong> or <strong>Cities</strong>. Each state and city has its own SEO
-                    landing page. You can change its heading, intro, about text, FAQs, images, gallery and
-                    visibility. A city page also creates service pages for that city.
+                    Go to <strong>States</strong>, <strong>Cities &amp; Villages</strong> or
+                    <strong>Villages, Localities &amp; Areas</strong>. Each record has its own SEO landing
+                    page. You can change its heading, intro, about text, FAQs, images, gallery and visibility.
+                    A city page also creates service pages for that city.
+                </p>
+
+                <p>
+                    Every state, city and village / area marked <strong>Show on website</strong> is listed on
+                    the public <strong>Service Areas</strong> page. Select multiple records in any list and use
+                    <strong>Show pages</strong> or <strong>Hide pages</strong> to update them together.
                 </p>
             </div>
         </x-filament::section>

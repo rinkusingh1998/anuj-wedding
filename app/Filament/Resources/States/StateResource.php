@@ -38,12 +38,14 @@ class StateResource extends Resource
 
     public static function getNavigationBadge(): ?string
     {
-        return (string) State::query()->visible()->count();
+        return (string) State::query()->count();
     }
 
     public static function getNavigationBadgeTooltip(): ?string
     {
-        return 'Visible states on website';
+        $visible = State::query()->visible()->count();
+
+        return $visible.' visible on website';
     }
 
     public static function form(Schema $schema): Schema

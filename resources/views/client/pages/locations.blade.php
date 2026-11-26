@@ -2,6 +2,13 @@
 
 @php
     $totalCities = $states->sum(fn ($state): int => $state->cities->count());
+
+    $totalLocalities = $states->sum(fn ($state): int => $state->localities
+        ->whereIn('city_id', $state->cities->pluck('id'))
+        ->count());
+
+    $totalLocations = $totalCities + $totalLocalities;
+
     $totalDistricts = $states->sum(fn ($state): int => $state->cities
         ->pluck('district')
         ->filter()
@@ -41,7 +48,9 @@
                 </div>
 
                 <div class="location-hero-stats">
-                    <div><strong>{{ $totalCities }}</strong><span>Published locations</span></div>
+                    <div><strong>{{ $totalLocations }}</strong><span>Published locations</span></div>
+                    <div><strong>{{ $totalCities }}</strong><span>Cities &amp; villages</span></div>
+                    <div><strong>{{ $totalLocalities }}</strong><span>Villages &amp; areas</span></div>
                     <div><strong>{{ $totalDistricts }}</strong><span>Districts covered</span></div>
                     <div><strong>{{ $states->count() }}</strong><span>State {{ $states->count() === 1 ? 'directory' : 'directories' }}</span></div>
                 </div>
@@ -64,10 +73,10 @@
                     <label class="visually-hidden" for="locationDirectorySearch">Search locations</label>
                     <input id="locationDirectorySearch"
                            type="search"
-                           placeholder="Search a city, town or district"
+                           placeholder="Search a city, town, village or area"
                            autocomplete="off"
                            data-location-filter>
-                    <span data-location-count>{{ $totalCities }} areas</span>
+                    <span data-location-count>{{ $totalLocations }} areas</span>
                 </div>
             </div>
 
@@ -75,6 +84,8 @@
                 @if ($state->cities->isNotEmpty())
                     @php
                         $districts = $state->cities->groupBy(fn ($city): string => $city->district ?: $state->name);
+                        $stateLocalities = $state->localities->whereIn('city_id', $state->cities->pluck('id'));
+                        $stateLocations = $state->cities->count() + $stateLocalities->count();
                     @endphp
 
                     <div class="locations-state-block">
@@ -85,10 +96,14 @@
                                     <a href="{{ $state->url() }}">{{ $state->name }}</a>
                                 </h2>
                             </div>
-                            <strong>{{ $state->cities->count() }} locations</strong>
+                            <strong>{{ $stateLocations }} locations</strong>
                         </div>
 
                         @foreach ($districts as $district => $cities)
+                            @php
+                                $districtLocalities = $stateLocalities->whereIn('city_id', $cities->pluck('id'));
+                            @endphp
+
                             <div class="locations-district-block" data-location-group>
                                 <h3>{{ $district }}</h3>
 
@@ -113,6 +128,36 @@
                                         </a>
                                     @endforeach
                                 </div>
+
+                                @if ($districtLocalities->isNotEmpty())
+                                    <div class="locations-localities-block" data-location-group>
+                                        <h4>Villages &amp; Areas</h4>
+
+                                        <div class="locations-city-grid">
+                                            @foreach ($districtLocalities as $locality)
+                                                <a href="{{ $locality->url() }}"
+                                                   class="locations-city-card locations-city-card--area"
+                                                   data-location-name="{{ strtolower($locality->name.' '.($locality->city?->name ?? '').' '.$district.' '.$state->name) }}">
+                                                    <span class="locations-city-icon">
+                                                        <i class="fa-solid fa-house" aria-hidden="true"></i>
+                                                    </span>
+                                                    <span class="locations-city-copy">
+                                                        <strong>{{ $locality->name }}</strong>
+                                                        <small>
+                                                            {{ $locality->city?->name }}
+                                                            &middot;
+                                                            {{ \App\Models\Locality::TYPES[$locality->type] ?? 'Area' }}
+                                                        </small>
+                                                    </span>
+                                                    <span class="locations-city-link">
+                                                        View area
+                                                        <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
+                                                    </span>
+                                                </a>
+                                            @endforeach
+                                        </div>
+                                    </div>
+                                @endif
                             </div>
                         @endforeach
                     </div>
