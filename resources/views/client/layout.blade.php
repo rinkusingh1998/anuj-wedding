@@ -12,6 +12,18 @@
 
     <x-head-links />
     @stack('head_links')
+
+   
+<!-- Google Analytics 4 -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-2Q85HMRN5K"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-2Q85HMRN5K');
+</script>
+
+
 </head>
 @php
     /**
