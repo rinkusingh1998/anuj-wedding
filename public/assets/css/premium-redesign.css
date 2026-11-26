@@ -3765,6 +3765,16 @@ body {
     color: var(--theme-text-dark) !important;
 }
 
+/* Inline spans and links inside body copy follow the same dark text.
+   Navigation, buttons and headings are outside p / li, so they keep
+   their own colour and size. */
+:root p span,
+:root p a,
+:root li span,
+:root li a {
+    color: var(--theme-text-dark) !important;
+}
+
 /* =========================================================
    LIGHT FOOTER + DARK COPY (2026-11-26)
    The footer now follows the same cream + dark-text system as
