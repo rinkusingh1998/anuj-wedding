@@ -106,6 +106,7 @@
                     href="{{ $profile->whatsappUrl() }}"
                     target="_blank"
                     rel="noopener"
+                    onclick="gtag('event', 'whatsapp_click', { event_category: 'engagement', event_label: 'WhatsApp Button' });"
                 >
                     <i class="fa-brands fa-whatsapp"></i>
                     WhatsApp Us

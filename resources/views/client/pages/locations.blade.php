@@ -189,7 +189,8 @@
                         <a href="{{ $profile->whatsappUrl('Hello! I would like to check decoration availability in my area.') }}"
                            class="contact-outline-btn"
                            target="_blank"
-                           rel="noopener">
+                           rel="noopener"
+                           onclick="gtag('event', 'whatsapp_click', { event_category: 'engagement', event_label: 'WhatsApp Button' });">
                             <i class="fa-brands fa-whatsapp" aria-hidden="true"></i>
                             WhatsApp Enquiry
                         </a>

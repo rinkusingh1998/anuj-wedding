@@ -67,7 +67,6 @@ h3,
 h4,
 h5,
 h6 {
-    color: var(--pr-ink);
     font-family: var(--font-heading);
     font-weight: 600;
     letter-spacing: -0.012em;
@@ -96,10 +95,6 @@ h6 {
     font-size: 0.98rem;
 }
 
-h1 span,
-h2 span {
-    color: var(--pr-accent);
-}
 
 h1 span {
     display: block;
@@ -751,7 +746,6 @@ img.package-image,
 .premium-service-page .svc-hero h1 {
     max-width: 840px;
     margin: 0 0 16px;
-    color: #fff;
     font-size: clamp(2.1rem, 1.5rem + 2.3vw, 3.55rem);
     line-height: 1.06;
 }
@@ -3762,18 +3756,12 @@ body {
 :root li {
     font-size: 12px !important;
     font-weight: 600 !important;
-    color: var(--theme-text-dark) !important;
 }
 
 /* Inline spans and links inside body copy follow the same dark text.
    Navigation, buttons and headings are outside p / li, so they keep
    their own colour and size. */
-:root p span,
-:root p a,
-:root li span,
-:root li a {
-    color: var(--theme-text-dark) !important;
-}
+
 
 /* =========================================================
    LIGHT FOOTER + DARK COPY (2026-11-26)
