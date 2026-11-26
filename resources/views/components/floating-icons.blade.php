@@ -34,6 +34,7 @@
 
     <a
         href="{{ $profile->whatsappUrl() }}"
+        onclick="gtag('event', 'whatsapp_click', { event_category: 'engagement', event_label: 'WhatsApp Button' });"
         class="floating-action floating-whatsapp floating-whatsapp-desktop"
         aria-label="WhatsApp us"
         target="_blank"
@@ -60,6 +61,7 @@
 
     <a
         href="{{ $profile->whatsappUrl() }}"
+        onclick="gtag('event', 'whatsapp_click', { event_category: 'engagement', event_label: 'WhatsApp Button' });"
         class="floating-action floating-whatsapp floating-whatsapp-mobile"
         aria-label="WhatsApp us"
     >

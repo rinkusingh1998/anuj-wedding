@@ -35,6 +35,8 @@
 @endphp
 @section('content')
 <main class="home-page">
+
+    
 <!-- start hero slider section -->
 @if (! empty($slides))
 <section class="hero-slider-section" id="hero-slider">
@@ -644,7 +646,8 @@
                         <a href="{{ $profile->whatsappUrl('Hello! I would like to discuss decoration for my event.') }}"
                            class="contact-whatsapp-btn"
                            target="_blank"
-                           rel="noopener">
+                           rel="noopener"
+                           onclick="gtag('event', 'whatsapp_click', { event_category: 'engagement', event_label: 'WhatsApp Button' });">
                             <i class="fa-brands fa-whatsapp" aria-hidden="true"></i>
                             Chat on WhatsApp
                         </a>

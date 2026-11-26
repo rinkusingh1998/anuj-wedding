@@ -155,7 +155,8 @@
                         <a href="{{ $profile->whatsappUrl('Hello! I saw your decoration gallery and would like to discuss my event.') }}"
                            class="gallery-final-phone"
                            target="_blank"
-                           rel="noopener">
+                           rel="noopener"
+                           onclick="gtag('event', 'whatsapp_click', { event_category: 'engagement', event_label: 'WhatsApp Button' });">
                             <i class="fa-brands fa-whatsapp" aria-hidden="true"></i>
                             <span>WhatsApp Us</span>
                         </a>

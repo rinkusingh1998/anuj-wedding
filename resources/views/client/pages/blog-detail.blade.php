@@ -49,7 +49,7 @@
                     </a>
 
                     @if (filled($whatsappUrl))
-                        <a href="{{ $whatsappUrl }}" class="contact-outline-btn" target="_blank" rel="noopener">
+                        <a href="{{ $whatsappUrl }}" class="contact-outline-btn" target="_blank" rel="noopener" onclick="gtag('event', 'whatsapp_click', { event_category: 'engagement', event_label: 'WhatsApp Button' });">
                             <i class="fa-brands fa-whatsapp" aria-hidden="true"></i>
                             WhatsApp Enquiry
                         </a>
@@ -94,7 +94,7 @@
                     <div class="blog-detail-share">
                         <h2>Share This Article</h2>
                         <div>
-                            <a href="https://wa.me/?text={{ $shareText }}%20{{ $shareUrl }}" target="_blank" rel="noopener">
+                            <a href="https://wa.me/?text={{ $shareText }}%20{{ $shareUrl }}" target="_blank" rel="noopener" onclick="gtag('event', 'whatsapp_click', { event_category: 'engagement', event_label: 'WhatsApp Button' });">
                                 <i class="fa-brands fa-whatsapp" aria-hidden="true"></i> WhatsApp
                             </a>
                             <a href="https://www.facebook.com/sharer/sharer.php?u={{ $shareUrl }}" target="_blank" rel="noopener">
@@ -119,7 +119,7 @@
                             </a>
 
                             @if (filled($whatsappUrl))
-                                <a href="{{ $whatsappUrl }}" class="blog-detail-cta-whatsapp" target="_blank" rel="noopener">
+                                <a href="{{ $whatsappUrl }}" class="blog-detail-cta-whatsapp" target="_blank" rel="noopener" onclick="gtag('event', 'whatsapp_click', { event_category: 'engagement', event_label: 'WhatsApp Button' });">
                                     <i class="fa-brands fa-whatsapp" aria-hidden="true"></i>
                                     WhatsApp
                                 </a>
