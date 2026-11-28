@@ -8,6 +8,7 @@ use App\Models\SeoSetting;
 use App\Models\Service;
 use App\Models\State;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Str;
 
 /**
  * SEO package for location pages (state / city / locality / service-in-city).
@@ -91,9 +92,21 @@ final class SeoContent
 
         $faqs = $this->faqs($city->faqs ?? []);
 
+        $description = $city->seoDescription();
+
+        if ($description === '') {
+            $phone = $this->profile->phone();
+            $description = Str::limit(
+                'Wedding and event decoration in '.$city->name.', '.$state->name
+                .' by '.$this->profile->name().'.'
+                .($phone !== '' ? ' Call '.$phone.' for booking.' : ''),
+                158,
+            );
+        }
+
         return $this->seo->build([
             'title' => $city->seoTitle(),
-            'description' => $city->seoDescription(),
+            'description' => $description,
             'canonical' => $city->seoCanonical(),
             'robots' => $city->seoRobots(),
             'image' => $city->ogImageUrl(),
@@ -139,9 +152,23 @@ final class SeoContent
 
         $faqs = $this->faqs($locality->faqs ?? []);
 
+        $description = $locality->seoDescription();
+
+        // The admin may not have written a description for a small area yet.
+        // A factual fallback still gives Google something useful to show.
+        if ($description === '') {
+            $phone = $this->profile->phone();
+            $description = Str::limit(
+                $locality->name.' in '.$city->name.', '.$state->name
+                .' - wedding and event decoration by '.$this->profile->name().'.'
+                .($phone !== '' ? ' Call '.$phone.' for booking.' : ''),
+                158,
+            );
+        }
+
         return $this->seo->build([
             'title' => $locality->seoTitle(),
-            'description' => $locality->seoDescription(),
+            'description' => $description,
             'canonical' => $locality->seoCanonical(),
             'robots' => $locality->seoRobots(),
             'image' => $locality->ogImageUrl(),
@@ -192,20 +219,33 @@ final class SeoContent
         // when the admin has written them for this city.
         $faqs = $this->faqs($city->faqs ?: $service->contentValue('faqs', []));
 
+        // Every service in a city must have its own title and description.
+        // Reusing the city meta here made all 13 service pages of a city
+        // identical in Google's eyes.
+        $siteName = SeoSetting::value('site_title', $this->profile->name());
+        $title = $serviceName.' in '.$city->name.' | '.$siteName;
+
+        $lead = $serviceName.' in '.$city->name.', '.$state->name.'.';
+        $source = trim((string) ($service->seoDescription() ?: $service->tagline ?: ''));
+
+        $description = $source !== ''
+            ? Str::limit($lead.' '.$source, 158)
+            : Str::limit($lead.' Wedding and event decoration by '.$this->profile->name().'.', 158);
+
         return $this->seo->build([
-            'title' => $city->meta_title ?: $serviceName.' in '.$city->name.' | '.SeoSetting::value('site_title', $this->profile->name()),
-            'description' => $city->meta_description ?: $service->seoDescription(),
+            'title' => $title,
+            'description' => $description,
             'canonical' => $url,
             'robots' => $city->seoRobots(),
             'image' => $service->ogImageUrl(),
             'image_alt' => $service->seoImageAlt(),
             'keywords' => $city->meta_keywords,
-            'og_title' => $city->og_title,
-            'og_description' => $city->og_description,
+            'og_title' => $title,
+            'og_description' => $description,
             'og_image' => $city->og_image,
             'twitter_card' => $city->twitter_card,
-            'twitter_title' => $city->twitter_title,
-            'twitter_description' => $city->twitter_description,
+            'twitter_title' => $title,
+            'twitter_description' => $description,
             'twitter_image' => $city->twitter_image,
             'heading' => null,
             'sub_heading' => null,

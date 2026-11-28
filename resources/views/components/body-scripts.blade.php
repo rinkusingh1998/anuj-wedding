@@ -1,6 +1,6 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script src="{{ asset('assets/js/main.js') }}"></script>
-<script src="{{ asset('assets/js/premium-redesign.js') }}?v=20261126c"></script>
+<script src="{{ asset('assets/js/premium-redesign.js') }}?v=20261127a"></script>
 <script src="{{ asset('assets/js/tracking.js') }}?v=20261101"></script>
 
 {{--

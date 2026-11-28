@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Middleware\CanonicalHost;
 use App\Http\Middleware\HandleRedirects;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
@@ -13,8 +14,13 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
-        // Admin managed 301/302 redirects run before the router.
+
+        // Trust Cloudflare proxy headers
+        $middleware->trustProxies(at: '*');
+
+        // Admin managed 301/302 redirects
         $middleware->web(append: [
+            CanonicalHost::class,
             HandleRedirects::class,
         ]);
     })

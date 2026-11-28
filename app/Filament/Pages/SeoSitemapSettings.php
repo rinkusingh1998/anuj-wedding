@@ -10,6 +10,7 @@ use App\Models\Service;
 use App\Models\State;
 use App\Providers\AppServiceProvider;
 use App\Services\SitemapService;
+use App\Support\CanonicalUrl;
 use BackedEnum;
 use Filament\Actions\Action;
 use Filament\Forms\Components\Select;
@@ -80,6 +81,7 @@ class SeoSitemapSettings extends Page
     {
         return $schema->components([
             $this->getStatsSection(),
+            $this->getIndexingSection(),
             $this->getFormContentComponent(),
         ]);
     }
@@ -228,6 +230,12 @@ class SeoSitemapSettings extends Page
     protected function getHeaderActions(): array
     {
         return [
+            Action::make('openSearchConsole')
+                ->label('Open Search Console')
+                ->icon(Heroicon::OutlinedArrowTopRightOnSquare)
+                ->color('gray')
+                ->url('https://search.google.com/search-console', true),
+
             Action::make('regenerateSitemap')
                 ->label('Regenerate sitemap')
                 ->icon(Heroicon::OutlinedArrowPath)
@@ -364,5 +372,66 @@ class SeoSitemapSettings extends Page
                     ->color($hiddenPages ? 'danger' : 'gray'),
             ])
             ->columns(3);
+    }
+
+    /**
+     * Indexing overview.
+     *
+     * Google Search Console ka "Indexed / Not indexed" data API se aane ke
+     * liye OAuth ya service-account credentials chahiye. Jab tak wo connect
+     * nahi hain, yahan wahi numbers dikhaye jaate hain jo hum control karte
+     * hain: kaunse pages sitemap me hain (indexable) aur kaunse jaan-boojh kar
+     * noindex hain. Isse pata chalta hai GSC me "Not indexed" list me kya
+     * expected hai aur kya asli problem.
+     */
+    private function getIndexingSection(): Section
+    {
+        $stats = app(SitemapService::class)->stats();
+        $base = CanonicalUrl::base() ?? rtrim((string) config('app.url'), '/');
+
+        $indexableCities = City::query()
+            ->where('is_visible', true)
+            ->where('is_service_area', true)
+            ->where(fn ($query) => $query->whereNull('published_at')->orWhere('published_at', '<=', now()))
+            ->where(fn ($query) => $query->whereNull('robots_index')->orWhere('robots_index', true))
+            ->count();
+
+        $noindexCities = City::query()
+            ->where('is_visible', true)
+            ->where(function ($query): void {
+                $query->where('is_service_area', false)
+                    ->orWhere('robots_index', false)
+                    ->orWhere(fn ($inner) => $inner->whereNotNull('published_at')->where('published_at', '>', now()));
+            })
+            ->count();
+
+        return Section::make('Indexing & Search Console')
+            ->description('Sitemap me sirf indexable pages jaate hain. Baaki visible city pages jaan-boojh kar noindex hain, is liye Google Search Console unhe "Not indexed" me dikhata hai - ye error nahi hai.')
+            ->schema([
+                Text::make('Sitemap: '.$base.'/sitemap.xml')
+                    ->badge()
+                    ->color('info'),
+
+                Text::make('Robots: '.$base.'/robots.txt')
+                    ->badge()
+                    ->color('info'),
+
+                Text::make('Indexable city pages: '.$indexableCities)
+                    ->badge()
+                    ->color('success'),
+
+                Text::make('Noindex city pages: '.$noindexCities)
+                    ->badge()
+                    ->color('warning'),
+
+                Text::make('Total sitemap URLs: '.$stats['urls'])
+                    ->badge()
+                    ->color('info'),
+
+                Text::make('Google Search Console → Pages report me "Indexed" aur "Not indexed" dono lists dekh sakte hain.')
+                    ->color('gray')
+                    ->columnSpanFull(),
+            ])
+            ->columns(2);
     }
 }

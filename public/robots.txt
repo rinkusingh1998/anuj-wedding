@@ -2,5 +2,6 @@ User-agent: *
 Allow: /
 Disallow: /admin
 Disallow: /livewire
+Disallow: /api
 
-Sitemap: http://localhost:8000/sitemap.xml
+Sitemap: https://weddingeventplanners.in/sitemap.xml

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Page;
 use App\Models\Post;
 use App\Models\PostCategory;
+use App\Models\SeoSetting;
 use App\Support\SeoManager;
 use Illuminate\Contracts\View\View;
 
@@ -25,11 +26,18 @@ class BlogController extends Controller
 
         abort_unless($page && $page->isPublished(), 404);
 
+        $posts = Post::query()->published()->ordered()->paginate(9);
+
         return view('client.pages.blogs', [
             'page' => $page,
-            'posts' => Post::query()->published()->ordered()->paginate(9),
+            'posts' => $posts,
             'categories' => PostCategory::query()->published()->ordered()->get(),
             'seo' => $this->seo->forModel($page, [
+                // Page 2+ keeps a self-referencing canonical instead of
+                // pointing back at page 1, so Google can index the archive.
+                'canonical' => $posts->currentPage() > 1
+                    ? $posts->url($posts->currentPage())
+                    : $page->url(),
                 'breadcrumbs' => [
                     ['name' => 'Home', 'url' => url('/')],
                     ['name' => $page->name, 'url' => $page->url()],
@@ -47,12 +55,21 @@ class BlogController extends Controller
 
         abort_unless($page && $page->isPublished(), 404);
 
+        $posts = $category->posts()->published()->ordered()->paginate(9);
+
         return view('client.pages.blogs', [
             'page' => $page,
             'category' => $category,
-            'posts' => $category->posts()->published()->ordered()->paginate(9),
+            'posts' => $posts,
             'categories' => PostCategory::query()->published()->ordered()->get(),
             'seo' => $this->seo->forModel($category, [
+                'description' => $category->seoDescription() ?: (
+                    'Browse '.$category->name.' articles, ideas and planning tips from '
+                    .SeoSetting::value('site_title', config('app.name')).'.'
+                ),
+                'canonical' => $posts->currentPage() > 1
+                    ? $posts->url($posts->currentPage())
+                    : $category->url(),
                 'breadcrumbs' => [
                     ['name' => 'Home', 'url' => url('/')],
                     ['name' => $page->name, 'url' => $page->url()],

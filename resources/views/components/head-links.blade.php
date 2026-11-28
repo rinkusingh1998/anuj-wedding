@@ -22,9 +22,7 @@
 
 <!-- Website CSS -->
 <link rel="stylesheet" href="{{ asset('assets/css/navbar.css') }}?v=20261122">
-<link rel="stylesheet" href="{{ asset('assets/css/style.css') }}?v=20261122">
-<link rel="stylesheet" href="{{ asset('assets/css/responsive.css') }}?v=20261122">
-<link rel="stylesheet" href="{{ asset('assets/css/premium-redesign.css') }}?v=20261126d">
+<link rel="stylesheet" href="{{ asset('assets/css/style.css') }}?v=20261128a">
 
 
 {{-- =========================================================

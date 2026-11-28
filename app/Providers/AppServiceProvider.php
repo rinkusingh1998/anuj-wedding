@@ -6,12 +6,15 @@ use App\Models\City;
 use App\Models\NavigationItem;
 use App\Models\SeoSetting;
 use App\Models\State;
+use App\Support\CanonicalUrl;
 use App\Support\MediaLibrary;
 use App\Support\SiteProfile;
 use App\Support\SiteSchema;
 use Illuminate\Contracts\View\View;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\View as ViewFactory;
 use Illuminate\Support\ServiceProvider;
 
@@ -23,7 +26,12 @@ class AppServiceProvider extends ServiceProvider
      * The homepage service-area block, footer, locations page and SEO stats all
      * read this list, so every place that clears the cache must use this key.
      */
-    public const LOCATIONS_CACHE_KEY = 'visible-states-with-all-cities-v2';
+    public const LOCATIONS_CACHE_KEY = 'visible-states-with-all-cities-v3';
+
+    /**
+     * Shared prefix for the cached header / footer / mobile menus.
+     */
+    public const NAVIGATION_CACHE_PREFIX = 'navigation-v2-';
 
     public function register(): void
     {
@@ -32,6 +40,8 @@ class AppServiceProvider extends ServiceProvider
 
     public function boot(): void
     {
+        $this->forceCanonicalHost();
+
         Paginator::useBootstrapFive();
 
         /*
@@ -119,11 +129,15 @@ class AppServiceProvider extends ServiceProvider
     /**
      * A navigation tree for the given menu (root -> group -> links).
      *
-     * @return array<int, array{label: string, description: ?string, url: string, icon: ?string, group_icon: ?string, badge: ?string, target: string, group: ?string, is_mega: bool, is_cta: bool, children: array<int, mixed>}>
+     * The cache only stores host-independent data. Real URLs are resolved on
+     * every request, so a cached menu can never leak the server IP address
+     * into links (for example when a health check hits the raw IP).
+     *
+     * @return array<int, array{label: string, description: ?string, url: string, route: ?string, icon: ?string, group_icon: ?string, badge: ?string, target: string, group: ?string, is_mega: bool, is_cta: bool, children: array<int, mixed>}>
      */
     protected function navigation(string $menu): array
     {
-        return Cache::remember('navigation-'.$menu, now()->addHour(), function () use ($menu): array {
+        $items = Cache::remember(self::NAVIGATION_CACHE_PREFIX.$menu, now()->addHour(), function () use ($menu): array {
             $items = NavigationItem::query()
                 ->menu($menu)
                 ->visible()
@@ -134,10 +148,12 @@ class AppServiceProvider extends ServiceProvider
 
             return $items->map(fn (NavigationItem $item): array => $this->navigationNode($item))->all();
         });
+
+        return $this->resolveNavigationUrls($items);
     }
 
     /**
-     * @return array{label: string, description: ?string, url: string, icon: ?string, group_icon: ?string, badge: ?string, target: string, group: ?string, is_mega: bool, is_cta: bool, children: array<int, mixed>}
+     * @return array{label: string, description: ?string, url: string, route: ?string, icon: ?string, group_icon: ?string, badge: ?string, target: string, group: ?string, is_mega: bool, is_cta: bool, children: array<int, mixed>}
      */
     protected function navigationNode(NavigationItem $item): array
     {
@@ -148,7 +164,8 @@ class AppServiceProvider extends ServiceProvider
         return [
             'label' => $item->label,
             'description' => $item->description,
-            'url' => $item->resolvedUrl(),
+            'url' => (string) $item->url,
+            'route' => filled($item->route) ? (string) $item->route : null,
             'icon' => $item->icon,
             'group_icon' => $item->groupIcon(),
             'badge' => $item->badge,
@@ -158,6 +175,108 @@ class AppServiceProvider extends ServiceProvider
             'is_cta' => (bool) ($item->meta['is_cta'] ?? false),
             'children' => $children,
         ];
+    }
+
+    /**
+     * Turn the cached navigation data into real, current URLs.
+     *
+     * @param  array<int, array<string, mixed>>  $items
+     * @return array<int, array<string, mixed>>
+     */
+    protected function resolveNavigationUrls(array $items): array
+    {
+        return array_map(fn (array $item): array => $this->resolveNavigationItem($item), $items);
+    }
+
+    /**
+     * @param  array<string, mixed>  $item
+     * @return array<string, mixed>
+     */
+    protected function resolveNavigationItem(array $item): array
+    {
+        $item['url'] = $this->navigationUrl(
+            $item['route'] ?? null,
+            (string) ($item['url'] ?? ''),
+        );
+
+        $item['children'] = array_map(
+            fn (array $child): array => $this->resolveNavigationItem($child),
+            $item['children'] ?? [],
+        );
+
+        return $item;
+    }
+
+    /**
+     * Build an internal URL at render time. Absolute links that point at a raw
+     * IP address are treated as internal and converted to a relative path, so
+     * old cached menus immediately stop sending visitors to the server IP.
+     */
+    protected function navigationUrl(?string $route, string $url): string
+    {
+        if (filled($route) && Route::has($route)) {
+            return route($route);
+        }
+
+        if ($url === '') {
+            return url('/');
+        }
+
+        if (str_starts_with($url, '#')) {
+            return $url;
+        }
+
+        if (preg_match('#^https?://#i', $url)) {
+            $host = (string) parse_url($url, PHP_URL_HOST);
+
+            // Same-site links stay relative so they always follow the live
+            // domain (and never keep a stale http:// or server-IP host).
+            $canonicalHost = (string) (CanonicalUrl::host() ?? parse_url((string) config('app.url'), PHP_URL_HOST));
+            $hostKey = strtolower((string) preg_replace('/^www\./i', '', $host));
+            $canonicalKey = strtolower((string) preg_replace('/^www\./i', '', $canonicalHost));
+
+            $isSameSite = $host !== '' && (
+                filter_var($host, FILTER_VALIDATE_IP)
+                || ($canonicalKey !== '' && $hostKey === $canonicalKey)
+            );
+
+            if ($isSameSite) {
+                $path = (string) (parse_url($url, PHP_URL_PATH) ?: '/');
+                $query = parse_url($url, PHP_URL_QUERY);
+
+                return $query ? $path.'?'.$query : $path;
+            }
+
+            return $url;
+        }
+
+        return url($url);
+    }
+
+    /**
+     * Never generate links for the raw server IP address.
+     *
+     * Some deployments are reachable both through the domain and through the
+     * server IP (health checks, direct access). Forcing the configured root URL
+     * keeps canonical links, forms and cached data on the real domain.
+     */
+    protected function forceCanonicalHost(): void
+    {
+        if ($this->app->runningUnitTests()) {
+            return;
+        }
+
+        $canonical = CanonicalUrl::base();
+
+        if ($canonical === null) {
+            return;
+        }
+
+        URL::forceRootUrl($canonical);
+
+        if (parse_url($canonical, PHP_URL_SCHEME) === 'https') {
+            URL::forceScheme('https');
+        }
     }
 
     /**
@@ -181,18 +300,25 @@ class AppServiceProvider extends ServiceProvider
                     ->orderByDesc('priority')
                     ->orderBy('name')])
                 ->get()
-                ->map(fn (State $state): array => [
-                    'name' => $state->name,
-                    'url' => $state->url(),
-                    'cities' => $state->cities
-                        ->map(fn (City $city): array => [
-                            'name' => $city->name,
-                            'url' => $city->url(),
-                            'district' => (string) ($city->district ?? ''),
-                        ])
-                        ->values()
-                        ->all(),
-                ])
+                ->map(function (State $state): array {
+                    // Give every city its parent state so the relative path is
+                    // built without an extra query per city.
+                    $state->cities->each(fn (City $city) => $city->setRelation('state', $state));
+
+                    return [
+                        'name' => $state->name,
+                        // Relative links keep this cache valid on any host.
+                        'url' => '/'.ltrim($state->path(), '/'),
+                        'cities' => $state->cities
+                            ->map(fn (City $city): array => [
+                                'name' => $city->name,
+                                'url' => '/'.ltrim($city->path(), '/'),
+                                'district' => (string) ($city->district ?? ''),
+                            ])
+                            ->values()
+                            ->all(),
+                    ];
+                })
                 ->filter(fn (array $state): bool => $state['cities'] !== [])
                 ->values()
                 ->all();

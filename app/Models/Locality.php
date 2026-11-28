@@ -159,7 +159,21 @@ class Locality extends Model
 
     public function seoTitle(): string
     {
-        return (string) ($this->meta_title ?: $this->name.' | '.SeoSetting::value('site_title', config('app.name')));
+        $custom = (string) $this->meta_title;
+
+        if ($custom !== '') {
+            return $custom;
+        }
+
+        // The same area name can exist in several cities ("Civil Lines"), so
+        // the city is part of the fallback title to keep every page unique.
+        $place = $this->name;
+
+        if (filled($this->city?->name)) {
+            $place .= ', '.$this->city->name;
+        }
+
+        return $place.' | Wedding & Event Decoration';
     }
 
     public function seoDescription(): string

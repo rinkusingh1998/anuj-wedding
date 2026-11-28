@@ -168,9 +168,11 @@ class GlobalSettings extends Page
         }
 
         Cache::forget('site-business-profile');
-        Cache::forget('navigation-header');
-        Cache::forget('navigation-footer');
-        Cache::forget('navigation-mobile');
+
+        foreach (['header', 'footer', 'mobile'] as $menu) {
+            Cache::forget(AppServiceProvider::NAVIGATION_CACHE_PREFIX.$menu);
+        }
+
         Cache::forget(AppServiceProvider::LOCATIONS_CACHE_KEY);
 
         Notification::make()

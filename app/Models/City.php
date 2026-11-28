@@ -196,7 +196,19 @@ class City extends Model
 
     public function seoDescription(): string
     {
-        return (string) ($this->meta_description ?: $this->sub_heading ?: '');
+        $description = (string) ($this->meta_description ?: $this->sub_heading ?: '');
+
+        // The imported meta text can repeat the city name ("Agra, Agra").
+        if ($description !== '' && filled($this->name)) {
+            $name = preg_quote((string) $this->name, '/');
+            $description = (string) preg_replace(
+                '/\b'.$name.',\s*'.$name.'\b/iu',
+                (string) $this->name,
+                $description,
+            );
+        }
+
+        return $description;
     }
 
     /**

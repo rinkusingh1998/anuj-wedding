@@ -56,6 +56,20 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Public Canonical URL
+    |--------------------------------------------------------------------------
+    |
+    | The one public domain the website must always use for canonical links,
+    | sitemaps and redirects. This is only used when APP_URL points at a raw
+    | server IP (which would otherwise leak the IP into links), and by console
+    | commands such as the sitemap generator that have no incoming request.
+    |
+    */
+
+    'public_url' => env('APP_PUBLIC_URL', 'https://weddingeventplanners.in'),
+
+    /*
+    |--------------------------------------------------------------------------
     | Application Timezone
     |--------------------------------------------------------------------------
     |

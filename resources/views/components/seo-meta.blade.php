@@ -22,6 +22,21 @@
             : ($site['site_title'] ?? config('app.name')));
 
     $description = (string) ($seo['description'] ?? '');
+
+    // Google shows about 155-160 characters. Long admin copy is cut at a word
+    // boundary so the snippet never ends mid-word.
+    $metaDescription = $description;
+
+    if (mb_strlen($metaDescription) > 158) {
+        $cut = mb_substr($metaDescription, 0, 158);
+        $space = mb_strrpos($cut, ' ');
+
+        if ($space !== false && $space > 110) {
+            $cut = mb_substr($cut, 0, $space);
+        }
+
+        $metaDescription = rtrim($cut, " \t\n\r\0\x0B,.;:-");
+    }
     $canonical = $seo['canonical'] ?? url()->current();
     $robots = $seo['robots'] ?? 'index, follow';
     $keywords = (string) ($seo['keywords'] ?? '');
@@ -36,8 +51,8 @@
 
 <title>{{ $title }}</title>
 
-@if ($description !== '')
-    <meta name="description" content="{{ $description }}">
+@if ($metaDescription !== '')
+    <meta name="description" content="{{ $metaDescription }}">
 @endif
 
 @if ($keywords !== '')

@@ -11,6 +11,7 @@ use App\Models\PostCategory;
 use App\Models\Service;
 use App\Models\State;
 use App\Providers\AppServiceProvider;
+use App\Support\CanonicalUrl;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\File;
 
@@ -88,6 +89,7 @@ final class SitemapService
             'Allow: /',
             'Disallow: /admin',
             'Disallow: /livewire',
+            'Disallow: /api',
             '',
             'Sitemap: '.$this->baseUrl('/sitemap.xml'),
             '',
@@ -313,7 +315,9 @@ final class SitemapService
 
     private function baseUrl(string $path = ''): string
     {
-        return rtrim(config('app.url'), '/').$path;
+        $base = CanonicalUrl::base() ?? rtrim((string) config('app.url'), '/');
+
+        return $base.$path;
     }
 
     private function removeOldFiles(): void
